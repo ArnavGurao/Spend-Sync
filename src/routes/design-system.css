@@ -47,6 +47,16 @@ body {
   font-family: "Inter", "Segoe UI", sans-serif;
   background:
     radial-gradient(
+      circle at 82% -8%,
+      rgba(83, 120, 240, 0.24),
+      transparent 41%
+    ),
+    radial-gradient(
+      circle at 15% 18%,
+      rgba(20, 120, 108, 0.16),
+      transparent 36%
+    ),
+    radial-gradient(
       circle at 75% -10%,
       rgba(30, 50, 110, 0.25),
       transparent 45%
@@ -110,12 +120,26 @@ body {
   color: var(--ss-text-primary);
   display: grid;
   place-content: center;
+  overflow: hidden;
   cursor: pointer;
-  transition: transform var(--ss-transition-fast);
+  transition:
+    transform var(--ss-transition-fast),
+    background var(--ss-transition-fast),
+    box-shadow var(--ss-transition-fast);
+}
+
+.ss-bell-btn:hover {
+  background: #1b1f28;
+  transform: translateY(-1px);
+  box-shadow: 0 0 0 1px rgba(248, 194, 0, 0.22);
 }
 
 .ss-bell-btn:active {
   transform: scale(0.98);
+}
+
+.ss-bell-btn:hover .ss-bell-icon {
+  animation: ss-bell-ring 460ms ease-out;
 }
 
 .ss-badge {
@@ -134,7 +158,7 @@ body {
 }
 
 .ss-sidebar {
-  padding: 0.8rem 1rem 0;
+  padding: 0.9rem 1rem 0;
 }
 
 .ss-side-nav {
@@ -145,22 +169,45 @@ body {
 
 .ss-side-nav-item {
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  padding: 0.5rem 0.82rem;
-  background: var(--ss-surface);
+  border-radius: 15px;
+  padding: 0.58rem 0.84rem;
+  background: rgba(23, 26, 33, 0.84);
+  backdrop-filter: blur(10px);
   color: var(--ss-text-secondary);
   text-transform: uppercase;
   font-size: 0.65rem;
   letter-spacing: 0.08em;
   font-weight: 700;
   text-decoration: none;
-  transition: all var(--ss-transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+  transition:
+    transform var(--ss-transition-fast),
+    box-shadow var(--ss-transition-base),
+    border-color var(--ss-transition-fast),
+    color var(--ss-transition-fast),
+    background var(--ss-transition-fast);
+}
+
+.ss-side-nav-item:hover {
+  transform: translateY(-1px);
+  border-color: rgba(159, 176, 255, 0.42);
+  color: #d7dffa;
+  box-shadow: 0 12px 24px -20px rgba(83, 120, 240, 0.65);
 }
 
 .ss-side-nav-item.active {
-  color: #15181f;
-  background: linear-gradient(135deg, #e8ebf1, #c6ccd7);
-  border-color: transparent;
+  color: #eef2ff;
+  background: linear-gradient(
+    135deg,
+    rgba(95, 113, 214, 0.36),
+    rgba(54, 74, 180, 0.18)
+  );
+  border-color: rgba(152, 172, 255, 0.48);
+  box-shadow:
+    0 0 0 1px rgba(148, 166, 255, 0.28),
+    0 16px 26px -22px rgba(83, 120, 240, 0.9);
 }
 
 .ss-side-nav-item.disabled {
@@ -168,10 +215,16 @@ body {
   cursor: default;
 }
 
+.ss-nav-icon {
+  font-size: 0.75rem;
+  opacity: 0.88;
+}
+
 .ss-main-panel {
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+  animation: ss-panel-fade 420ms ease-out both;
 }
 
 .ss-main-panel::-webkit-scrollbar,
@@ -184,9 +237,9 @@ body {
 
 .ss-content {
   width: 100%;
-  max-width: 700px;
+  max-width: 760px;
   margin: 0 auto;
-  padding: 1.9rem 1.35rem 7.6rem;
+  padding: 2.1rem 1.35rem 7.6rem;
 }
 
 .ss-bottom-dock {
@@ -229,7 +282,7 @@ body {
 
 .ss-dashboard-screen {
   display: grid;
-  gap: 1.1rem;
+  gap: 1.3rem;
 }
 
 .ss-dashboard-greeting h2 {
@@ -306,31 +359,67 @@ body {
 }
 
 .ss-wallet-stack {
+  display: grid;
+  gap: 0.9rem;
   border-radius: var(--ss-radius-lg);
-  cursor: ns-resize;
+  cursor: grab;
 }
 
 .ss-wallet-active-wrap {
   position: relative;
-  min-height: 20rem;
+  min-height: 16.2rem;
+  padding-right: 4.5rem;
+}
+
+.ss-wallet-glimpse-row {
+  position: absolute;
+  right: 0;
+  top: 1rem;
+  width: 6.2rem;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.ss-wallet-glimpse {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  min-height: 3.6rem;
+  text-align: left;
+  color: rgba(247, 249, 255, 0.9);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  padding: 0.6rem;
+  cursor: pointer;
+  transition:
+    transform var(--ss-transition-fast),
+    filter var(--ss-transition-fast);
+}
+
+.ss-wallet-glimpse:hover {
+  filter: brightness(1.08);
 }
 
 .ss-wallet-active-card {
   position: relative;
   z-index: 5;
-  min-height: 14.4rem;
-  border-radius: var(--ss-radius-lg);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  padding: 1.1rem;
-  box-shadow: var(--ss-shadow-soft);
+  min-height: 15.4rem;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  padding: 1.2rem 1.2rem 1.1rem;
+  backdrop-filter: blur(8px);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.12) inset,
+    0 24px 42px -24px rgba(0, 0, 0, 0.8);
   transition:
-    transform 380ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1),
     box-shadow var(--ss-transition-base);
 }
 
 .ss-wallet-active-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--ss-shadow-glow);
+  transform: translateY(-6px) scale(1.01);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.16) inset,
+    0 28px 48px -22px rgba(0, 0, 0, 0.92);
 }
 
 .ss-wallet-card-head {
@@ -346,46 +435,67 @@ body {
 
 .ss-wallet-badge {
   border-radius: var(--ss-pill-radius);
-  background: rgba(0, 0, 0, 0.36);
+  background: rgba(0, 0, 0, 0.3);
   padding: 0.35rem 0.7rem;
   font-weight: 700;
 }
 
-.ss-wallet-number {
-  margin: 7.3rem 0 0;
-  font-family: "Manrope", "Consolas", monospace;
-  font-size: clamp(1.6rem, 4vw, 2.2rem);
+.ss-wallet-chip {
+  margin: 2.1rem 0 0;
+  font-size: 0.7rem;
+  color: rgba(248, 249, 251, 0.78);
+  text-transform: uppercase;
   letter-spacing: 0.18em;
-  font-variant-numeric: tabular-nums;
 }
 
-.ss-wallet-peek-stack {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 4;
-  display: grid;
-  gap: 0.45rem;
-}
-
-.ss-wallet-peek {
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 14px;
-  background: var(--ss-surface-2);
-  color: rgba(243, 245, 250, 0.9);
+.ss-wallet-number {
+  margin: 0.75rem 0 0;
   font-family: "Manrope", "Consolas", monospace;
-  font-size: 0.95rem;
-  letter-spacing: 0.12em;
+  font-size: clamp(1.36rem, 3.9vw, 1.8rem);
+  letter-spacing: 0.22em;
   font-variant-numeric: tabular-nums;
-  text-align: left;
-  padding: 0.62rem 0.85rem;
-  cursor: pointer;
-  transition: transform var(--ss-transition-fast);
 }
 
-.ss-wallet-peek:hover {
-  transform: translateY(-2px);
+.ss-wallet-controls {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.ss-wallet-nav {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  width: 2.15rem;
+  height: 2.15rem;
+  background: rgba(255, 255, 255, 0.03);
+  color: #e8ecff;
+  cursor: pointer;
+}
+
+.ss-wallet-nav:hover {
+  background: rgba(255, 255, 255, 0.09);
+}
+
+.ss-wallet-dots {
+  display: flex;
+  justify-content: center;
+  gap: 0.44rem;
+}
+
+.ss-wallet-dot {
+  border: 0;
+  border-radius: 999px;
+  width: 0.46rem;
+  height: 0.46rem;
+  background: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all var(--ss-transition-fast);
+}
+
+.ss-wallet-dot.active {
+  width: 1.12rem;
+  background: #f6c74c;
 }
 
 .ss-wallet-gradient-axis {
@@ -404,15 +514,42 @@ body {
   background: var(--ss-card-hdfc);
 }
 
+.ss-wallet-gradient-other {
+  background: linear-gradient(135deg, #2d1b69, #11998e);
+}
+
+.ss-wallet-gradient-none {
+  background: linear-gradient(135deg, #1f2020, #131313);
+}
+
 .ss-optimization-card {
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.11);
   border-radius: var(--ss-radius-lg);
-  background: linear-gradient(145deg, #25282f, #1f222a);
-  padding: 1.1rem;
+  background: linear-gradient(
+    145deg,
+    rgba(48, 53, 64, 0.64),
+    rgba(31, 36, 46, 0.44)
+  );
+  backdrop-filter: blur(14px);
+  padding: 1.05rem 1.1rem;
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
   gap: 0.85rem;
+  transition:
+    transform var(--ss-transition-fast),
+    border-color var(--ss-transition-fast),
+    box-shadow var(--ss-transition-base);
+}
+
+.ss-optimization-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 20px 28px -24px rgba(110, 130, 225, 0.62);
+}
+
+.ss-optimization-spacing {
+  margin-top: clamp(2.5rem, 5.5vw, 3.6rem);
 }
 
 .ss-optimization-icon {
@@ -447,12 +584,12 @@ body {
 }
 
 .ss-review-pill {
-  border: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: var(--ss-pill-radius);
   min-height: 2.25rem;
   padding: 0.35rem 1rem;
-  background: rgba(248, 248, 248, 0.88);
-  color: #1f242c;
+  background: linear-gradient(135deg, #f8c95d, #e7b340);
+  color: #171104;
   text-transform: uppercase;
   letter-spacing: 0.08em;
   font-size: 0.92rem;
@@ -462,7 +599,7 @@ body {
 }
 
 .ss-review-pill:hover {
-  background: #fff;
+  filter: brightness(1.05);
 }
 
 .ss-dashboard-pills {
@@ -564,7 +701,9 @@ body {
 .ss-side-nav-item:focus-visible,
 .ss-dock-tab:focus-visible,
 .ss-wallet-stack:focus-visible,
-.ss-wallet-peek:focus-visible,
+.ss-wallet-glimpse:focus-visible,
+.ss-wallet-nav:focus-visible,
+.ss-wallet-dot:focus-visible,
 .ss-review-pill:focus-visible,
 .ss-mini-pill:focus-visible,
 .ss-main-cta:focus-visible,
@@ -574,7 +713,8 @@ body {
 .ss-optimizer-input:focus-visible,
 .ss-optimizer-filter:focus-visible,
 .ss-efficiency-btn:focus-visible,
-.ss-utility-link:focus-visible {
+.ss-utility-link:focus-visible,
+.ss-optimization-card:focus-visible {
   outline: 2px solid #ffd44d;
   outline-offset: 2px;
 }
@@ -587,7 +727,11 @@ body {
 .ss-review-pill,
 .ss-bell-btn,
 .ss-main-cta,
-.ss-wallet-peek {
+.ss-wallet-glimpse,
+.ss-wallet-nav,
+.ss-wallet-dot,
+.ss-side-nav-item,
+.ss-optimization-card {
   transition:
     transform var(--ss-transition-base),
     box-shadow var(--ss-transition-base),
@@ -600,9 +744,38 @@ body {
 .ss-segment-btn:hover,
 .ss-range-btn:hover,
 .ss-mini-pill:hover,
-.ss-wallet-peek:hover,
-.ss-bell-btn:hover {
+.ss-bell-btn:hover,
+.ss-wallet-glimpse:hover {
   box-shadow: var(--ss-shadow-glow);
+}
+
+@keyframes ss-bell-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(-16deg);
+  }
+  55% {
+    transform: rotate(14deg);
+  }
+  80% {
+    transform: rotate(-7deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes ss-panel-fade {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .ss-card {
@@ -1324,6 +1497,10 @@ body {
     padding: 2rem 1.25rem 1.4rem;
   }
 
+  .ss-wallet-zone {
+    margin-right: -1.25rem;
+  }
+
   .ss-dashboard-pills {
     grid-template-columns: repeat(2, minmax(0, 300px));
     justify-content: start;
@@ -1355,6 +1532,25 @@ body {
 }
 
 @media (max-width: 520px) {
+  .ss-wallet-active-wrap {
+    padding-right: 0;
+  }
+
+  .ss-wallet-glimpse-row {
+    width: 5rem;
+    top: 0.9rem;
+  }
+
+  .ss-wallet-active-card {
+    min-height: 14rem;
+    padding: 1.05rem;
+  }
+
+  .ss-wallet-number {
+    font-size: 1.08rem;
+    letter-spacing: 0.18em;
+  }
+
   .ss-optimization-card {
     grid-template-columns: auto 1fr;
     grid-template-areas:
@@ -1376,6 +1572,15 @@ body {
     grid-area: review;
     justify-self: end;
   }
+
+  .ss-wallet-controls {
+    gap: 0.55rem;
+  }
+
+  .ss-wallet-nav {
+    width: 2rem;
+    height: 2rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1388,7 +1593,10 @@ body {
   .ss-bell-btn,
   .ss-main-cta,
   .ss-wallet-active-card,
-  .ss-wallet-peek,
+  .ss-wallet-glimpse,
+  .ss-wallet-nav,
+  .ss-wallet-dot,
+  .ss-optimization-card,
   .ss-enter-row,
   .ss-interactive-card,
   .ss-stagger-enter > * {

@@ -1,6 +1,7 @@
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
+import { AnimatePresence, motion } from "framer-motion"
 
-const walletCards = [
+const initialWalletCards = [
   {
     id: "axis",
     bank: "Axis Bank Magnus",
@@ -42,16 +43,30 @@ function rotateToFront(cards, index) {
   return [...cards.slice(index), ...cards.slice(0, index)]
 }
 
-function WalletStack() {
+function WalletStack({ cards }) {
   const [activeIndex, setActiveIndex] = useState(0)
+  const [direction, setDirection] = useState(1)
 
-  const orderedCards = useMemo(() => {
-    return rotateToFront(walletCards, activeIndex)
-  }, [activeIndex])
+  useEffect(() => {
+    if (activeIndex < cards.length) {
+      return
+    }
+    setActiveIndex(0)
+  }, [activeIndex, cards.length])
+
+  const orderedCards = useMemo(
+    () => rotateToFront(cards, activeIndex),
+    [activeIndex, cards],
+  )
+
+  if (cards.length === 0) {
+    return null
+  }
 
   function changeByDelta(delta) {
+    setDirection(delta > 0 ? 1 : -1)
     setActiveIndex((current) => {
-      const total = walletCards.length
+      const total = cards.length
       return (current + delta + total) % total
     })
   }
@@ -65,15 +80,18 @@ function WalletStack() {
   }
 
   function onKeyDown(event) {
-    if (event.key === "ArrowDown") {
+    if (event.key === "ArrowRight") {
       event.preventDefault()
       changeByDelta(1)
     }
-    if (event.key === "ArrowUp") {
+    if (event.key === "ArrowLeft") {
       event.preventDefault()
       changeByDelta(-1)
     }
   }
+
+  const activeCard = orderedCards[0]
+  const layeredCards = orderedCards.slice(1, 4)
 
   return (
     <section
@@ -84,47 +102,105 @@ function WalletStack() {
       aria-label="Wallet card stack"
     >
       <div className="ss-wallet-active-wrap">
-        <article
-          className={`ss-wallet-active-card ss-wallet-gradient-${orderedCards[0].gradient}`}
-          key={orderedCards[0].id}
-        >
-          <header className="ss-wallet-card-head">
-            <span>{orderedCards[0].bank}</span>
-            <span className="ss-wallet-badge">
-              {`${inr(orderedCards[0].monthlySpend)}/MO`}
-            </span>
-          </header>
-          <p className="ss-wallet-number">{`XXXX XXXX XXXX ${orderedCards[0].last4}`}</p>
-        </article>
-
-        <div className="ss-wallet-peek-stack">
-          {orderedCards.slice(1).map((card, index) => (
+        <div className="ss-wallet-glimpse-row">
+          {layeredCards.map((card, index) => (
             <button
               key={card.id}
               type="button"
-              className={`ss-wallet-peek ss-wallet-gradient-${card.gradient}`}
-              style={{ transform: `translateY(${index * 0.95}rem)` }}
+              className={`ss-wallet-glimpse ss-wallet-gradient-${card.gradient}`}
+              style={{
+                transform: `translateX(${(index + 1) * 0.9}rem) scale(${1 - (index + 1) * 0.06})`,
+                zIndex: 4 - index,
+              }}
               onClick={() => {
-                const originalIndex = walletCards.findIndex(
+                const originalIndex = cards.findIndex(
                   (item) => item.id === card.id,
                 )
+                setDirection(1)
                 setActiveIndex(originalIndex)
               }}
             >
-              <span>{`XXXX XXXX XXXX ${card.last4}`}</span>
+              <span>{card.bank}</span>
             </button>
           ))}
         </div>
+
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.article
+            key={activeCard.id}
+            custom={direction}
+            className={`ss-wallet-active-card ss-wallet-gradient-${activeCard.gradient}`}
+            initial={{ opacity: 0.6, x: direction > 0 ? 48 : -48, scale: 0.96 }}
+            animate={{ opacity: 1, x: 0, scale: 1 }}
+            exit={{ opacity: 0, x: direction > 0 ? -48 : 48, scale: 0.94 }}
+            transition={{ duration: 0.32, ease: "easeOut" }}
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.2}
+            onDragEnd={(_, info) => {
+              if (info.offset.x <= -55) {
+                changeByDelta(1)
+                return
+              }
+              if (info.offset.x >= 55) {
+                changeByDelta(-1)
+              }
+            }}
+          >
+            <header className="ss-wallet-card-head">
+              <span>{activeCard.bank}</span>
+              <span className="ss-wallet-badge">{`${inr(activeCard.monthlySpend)}/MO`}</span>
+            </header>
+            <p className="ss-wallet-chip">SpendSync Wallet</p>
+            <p className="ss-wallet-number">{`XXXX XXXX XXXX ${activeCard.last4}`}</p>
+          </motion.article>
+        </AnimatePresence>
+      </div>
+
+      <div className="ss-wallet-controls" aria-label="Wallet controls">
+        <button
+          type="button"
+          className="ss-wallet-nav"
+          onClick={() => changeByDelta(-1)}
+          aria-label="Previous card"
+        >
+          ←
+        </button>
+        <div
+          className="ss-wallet-dots"
+          role="tablist"
+          aria-label="Card selector"
+        >
+          {cards.map((card, index) => (
+            <button
+              key={card.id}
+              type="button"
+              className={`ss-wallet-dot ${activeIndex === index ? "active" : ""}`}
+              onClick={() => {
+                setDirection(index > activeIndex ? 1 : -1)
+                setActiveIndex(index)
+              }}
+              aria-label={`View ${card.bank}`}
+            />
+          ))}
+        </div>
+        <button
+          type="button"
+          className="ss-wallet-nav"
+          onClick={() => changeByDelta(1)}
+          aria-label="Next card"
+        >
+          →
+        </button>
       </div>
     </section>
   )
 }
 
 export function Home() {
-  const totalMonthly = walletCards.reduce(
-    (sum, card) => sum + card.monthlySpend,
-    0,
-  )
+  const cards = initialWalletCards
+
+  const totalMonthly = cards.reduce((sum, card) => sum + card.monthlySpend, 0)
 
   return (
     <article className="ss-dashboard-screen">
@@ -146,11 +222,11 @@ export function Home() {
         </button>
       </section>
 
-      <section className="ss-enter-row">
-        <WalletStack />
+      <section className="ss-enter-row ss-wallet-zone">
+        <WalletStack cards={cards} />
       </section>
 
-      <section className="ss-optimization-card ss-enter-row">
+      <section className="ss-optimization-card ss-enter-row ss-optimization-spacing">
         <div className="ss-optimization-icon" aria-hidden="true">
           ✦
         </div>

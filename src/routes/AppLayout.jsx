@@ -1,5 +1,13 @@
 import { NavLink, Outlet } from "react-router-dom"
 
+const navItems = [
+  { to: "/", label: "Dashboard", icon: "⌂", end: true },
+  { to: "/optimizer", label: "Cards", icon: "◈" },
+  { to: "/analytics", label: "Analytics", icon: "◎" },
+  { label: "Alerts", icon: "◌", disabled: true },
+  { to: "/about", label: "About", icon: "◍" },
+]
+
 function sideNavClass({ isActive }) {
   return isActive ? "ss-side-nav-item active" : "ss-side-nav-item"
 }
@@ -29,19 +37,32 @@ export function AppLayout() {
 
       <aside className="ss-sidebar">
         <nav className="ss-side-nav">
-          <NavLink to="/" className={sideNavClass} end>
-            Dashboard
-          </NavLink>
-          <NavLink to="/optimizer" className={sideNavClass}>
-            Cards
-          </NavLink>
-          <NavLink to="/analytics" className={sideNavClass}>
-            Analytics
-          </NavLink>
-          <span className="ss-side-nav-item disabled">Alerts</span>
-          <NavLink to="/about" className={sideNavClass}>
-            About
-          </NavLink>
+          {navItems.map((item) => {
+            if (item.disabled) {
+              return (
+                <span key={item.label} className="ss-side-nav-item disabled">
+                  <span className="ss-nav-icon" aria-hidden="true">
+                    {item.icon}
+                  </span>
+                  <span>{item.label}</span>
+                </span>
+              )
+            }
+
+            return (
+              <NavLink
+                key={item.label}
+                to={item.to}
+                className={sideNavClass}
+                end={item.end}
+              >
+                <span className="ss-nav-icon" aria-hidden="true">
+                  {item.icon}
+                </span>
+                <span>{item.label}</span>
+              </NavLink>
+            )
+          })}
         </nav>
       </aside>
 
