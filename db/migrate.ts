@@ -4,18 +4,18 @@ import { drizzle } from "drizzle-orm/libsql"
 import { migrate } from "drizzle-orm/libsql/migrator"
 
 config({
-    quiet: true,
+  quiet: true,
 })
 
 const client = createClient({
-    url: process.env.APP_DATABASE_URL ?? "file:./db/local.db",
-    authToken: process.env.APP_DATABASE_AUTH_TOKEN,
+  url: process.env.APP_DATABASE_URL!,
+  authToken: process.env.APP_DATABASE_AUTH_TOKEN,
 })
 
 const db = drizzle(client)
 
 await migrate(db, {
-    migrationsFolder: "./db/migrations",
+  migrationsFolder: "./db/migrations",
 })
 
 console.log("Migrations complete")

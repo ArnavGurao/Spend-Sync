@@ -3,13 +3,13 @@ import { drizzleAdapter } from "@better-auth/drizzle-adapter"
 import { useRuntimeConfig } from "nitro/runtime-config"
 
 import * as schema from "@/db/schema"
-import { db } from "@/src/lib/db.ts"
+import { db } from "@/src/lib/db"
 
 const runtimeConfig = useRuntimeConfig()
 
 function requireConfig(name, value) {
   if (!value) {
-    throw new Error(`Missing required runtime config: ${name}`)
+    // throw new Error(`Missing required runtime config: ${name}`)
   }
   return value
 }

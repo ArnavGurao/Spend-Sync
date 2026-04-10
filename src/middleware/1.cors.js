@@ -4,10 +4,6 @@ import { defineHandler } from "nitro"
 const allowedOrigins = ["http://localhost:3000"]
 
 export default defineHandler((event) => {
-  if (!event.url.pathname.startsWith("/api/")) {
-    return
-  }
-
   const res = handleCors(event, {
     origin: allowedOrigins,
     credentials: true,
