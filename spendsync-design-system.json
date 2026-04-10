@@ -1,0 +1,70 @@
+{
+  "_meta": {
+    "name": "SpendSync Design System",
+    "version": "1.0.0",
+    "purpose": "Reusable UI/UX design token system for SpendSync.",
+    "stack": {
+      "fonts": "Manrope for headlines, Inter for body",
+      "tailwind_dark_mode": "class"
+    }
+  },
+  "colors": {
+    "backgrounds": {
+      "background": "#0e0e0e",
+      "surface-container-low": "#131313",
+      "surface-container": "#191a1a",
+      "surface-container-high": "#1f2020",
+      "surface-container-highest": "#252626"
+    },
+    "primary": {
+      "primary": "#c6c6c7",
+      "primary-container": "#454747",
+      "on-primary": "#3f4041"
+    },
+    "secondary": {
+      "secondary": "#ffbf00"
+    },
+    "tertiary": {
+      "tertiary": "#ff716b"
+    },
+    "error": {
+      "error": "#ee7d77"
+    },
+    "text": {
+      "on-surface": "#e7e5e4",
+      "on-surface-variant": "#acabaa"
+    },
+    "borders": {
+      "outline": "#767575",
+      "outline-variant": "#484848"
+    },
+    "card_gradients": {
+      "hdfc": "from-[#8b1d1d] via-[#e11d48] to-[#4c0519]",
+      "icici": "from-[#E65C00] to-[#993D00]",
+      "sbi": "from-[#003366] to-[#001A33]",
+      "axis": "from-[#4A0E1C] to-[#2D0911]",
+      "default": "from-[#1a1a2e] to-[#16213e]"
+    }
+  },
+  "typography": {
+    "font_families": {
+      "headline": "Manrope",
+      "body": "Inter",
+      "label": "Inter"
+    }
+  },
+  "non_negotiable_rules": [
+    "Background is ALWAYS #0e0e0e",
+    "Use rounded-full as the default component shape",
+    "All interactive elements include active:scale-95 tactile feedback",
+    "Manrope for headings and key numbers",
+    "Inter for body copy and labels",
+    "Use toLocaleString('en-IN') for INR formatting"
+  ],
+  "future_scope": {
+    "sms": {
+      "status": "planned",
+      "notes": "SMS ingestion and bottom-sheet classification flow are planned future scope and should remain feature-flagged until enabled."
+    }
+  }
+}

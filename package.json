@@ -2,7 +2,7 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "vite dev",
+    "dev": "vite dev --host",
     "preview": "vite preview",
     "lint:check": "oxfmt --check",
     "db:generate": "drizzle-kit generate",
@@ -29,6 +29,7 @@
     "@tanstack/router-plugin": "^1.167.4",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+    "react-grab": "^0.1.31",
     "react-router-dom": "^7.13.2",
     "tailwindcss": "^4.2.2"
   }

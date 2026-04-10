@@ -1,30 +1,54 @@
 import { NavLink, Outlet } from "react-router-dom"
 
-function navClass({ isActive }) {
-  return isActive ? "font-semibold underline" : "hover:underline"
+function sideNavClass({ isActive }) {
+  return isActive ? "ss-side-nav-item active" : "ss-side-nav-item"
 }
 
 export function AppLayout() {
   return (
-    <main className="mx-auto max-w-3xl px-6 py-10">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold">Nitro + React Router</h1>
-        <p className="mt-2 text-gray-700">
-          Basic routed app with loader boilerplate.
-        </p>
+    <main className="ss-app-shell ss-shell-grid">
+      <header className="ss-topbar">
+        <div className="ss-topbar-brand" aria-label="SpendSync brand">
+          <span className="ss-topbar-logo" aria-hidden="true">
+            ◍
+          </span>
+          <h1 className="ss-wordmark">SpendSync</h1>
+        </div>
+
+        <button
+          type="button"
+          className="ss-bell-btn"
+          aria-label="Notifications"
+        >
+          <span className="ss-bell-icon" aria-hidden="true">
+            🔔
+          </span>
+          <span className="ss-badge">3</span>
+        </button>
       </header>
 
-      <nav className="mb-6 flex gap-4 border-b pb-4">
-        <NavLink to="/" className={navClass} end>
-          Home
-        </NavLink>
-        <NavLink to="/about" className={navClass}>
-          About
-        </NavLink>
-      </nav>
+      <aside className="ss-sidebar">
+        <nav className="ss-side-nav">
+          <NavLink to="/" className={sideNavClass} end>
+            Dashboard
+          </NavLink>
+          <NavLink to="/optimizer" className={sideNavClass}>
+            Cards
+          </NavLink>
+          <NavLink to="/analytics" className={sideNavClass}>
+            Analytics
+          </NavLink>
+          <span className="ss-side-nav-item disabled">Alerts</span>
+          <NavLink to="/about" className={sideNavClass}>
+            About
+          </NavLink>
+        </nav>
+      </aside>
 
-      <section>
-        <Outlet />
+      <section className="ss-main-panel">
+        <section className="ss-content">
+          <Outlet />
+        </section>
       </section>
     </main>
   )

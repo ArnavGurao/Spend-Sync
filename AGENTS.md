@@ -170,3 +170,11 @@ Formatting is defined by `.oxfmtrc.json`.
 - Add or update tests for non-trivial logic changes once test infra exists.
 - Include verification notes (commands run, outcomes, known gaps).
 - Do not remove or weaken security checks without explicit justification.
+
+## Specialized Agent Profiles
+
+- Frontend Design Agent: `FRONTEND_DESIGN_AGENT.md`
+  - Use this profile when the task is strictly UI/UX, visual design, route
+    component styling, or responsive frontend behavior.
+  - It is intentionally scoped to frontend work and uses
+    `spendsync-design-system.json` as design source of truth.
